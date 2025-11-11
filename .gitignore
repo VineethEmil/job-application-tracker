@@ -206,5 +206,9 @@ marimo/_static/
 marimo/_lsp/
 __marimo__/
 
+<<<<<<< HEAD
 #credentials
 credentials.json
+=======
+credentials.json
+>>>>>>> 561829d (Added GitHub Actions workflow for job tracker)
