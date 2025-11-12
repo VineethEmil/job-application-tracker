@@ -2,8 +2,8 @@ name: Job Tracker Automation
 
 on:
   schedule:
-    - cron: "0 */12 * * *"   # Runs every 12 hours
-  workflow_dispatch:         # Allow manual runs
+    - cron: "0 */6 * * *"   # Runs every 6 hours
+  workflow_dispatch:         # Allow manual trigger
 
 jobs:
   update-jobs:
@@ -33,3 +33,12 @@ jobs:
           echo "$GOOGLE_SHEETS_CREDENTIALS" > credentials.json
           export GOOGLE_SHEETS_CREDENTIALS_PATH="credentials.json"
           python auto_update_jobs.py
+
+      - name: Send daily digest email
+        if: always()  # Runs even if previous step fails
+        env:
+          MAIL_SENDER: ${{ secrets.MAIL_SENDER }}
+          MAIL_PASSWORD: ${{ secrets.MAIL_PASSWORD }}
+          MAIL_RECEIVER: ${{ secrets.MAIL_RECEIVER }}
+        run: |
+          python email_digest.py
