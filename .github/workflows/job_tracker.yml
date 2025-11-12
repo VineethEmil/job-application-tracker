@@ -3,12 +3,10 @@ name: Job Tracker Automation
 on:
   schedule:
     - cron: "0 */12 * * *"  # Runs every 12 hours
-  workflow_dispatch:        # Allows manual trigger from GitHub UI
-
+  workflow_dispatch:        # Allows manual trigger
 jobs:
-  run-tracker:
+  update-jobs:
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -23,13 +21,12 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      - name: Run job tracker
+      - name: Run job update
         env:
           ADZUNA_APP_ID: ${{ secrets.ADZUNA_APP_ID }}
           ADZUNA_APP_KEY: ${{ secrets.ADZUNA_APP_KEY }}
-          GOOGLE_SHEETS_CREDENTIALS_JSON: ${{ secrets.GOOGLE_SHEETS_CREDENTIALS_JSON }}
+          GOOGLE_SHEETS_CREDENTIALS: ${{ secrets.GOOGLE_SHEETS_CREDENTIALS }}
           SHEET_NAME: ${{ secrets.SHEET_NAME }}
-          EMAIL_USER: ${{ secrets.EMAIL_USER }}
-          EMAIL_PASS: ${{ secrets.EMAIL_PASS }}
         run: |
+          echo "$GOOGLE_SHEETS_CREDENTIALS" > credentials.json
           python auto_update_jobs.py
